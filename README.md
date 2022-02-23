@@ -12,7 +12,23 @@ The data is provided in such a way to faciliate including the uncertainties in D
 
 ## Structure of the Tables
 
-For each final state, there is one dedicated file in ascii format. Each file contains one hundred columns: The DM mass in GeV, the fraction x -- defined as the kinetic energy of the particle divided by the DM mass --. The rest of the columns are organised as 
+For each stable final state, there is one dedicated file in ascii format. The tables are organised into two folders: 
+```console
+$ data/woUncertainty
+$ data/wUncertainty
+```
+
+#### 1) data/woUncertainty
+
+In this folder, we provide the spectra without QCD uncertainties, i.e. just the nominal predictions. Each file contains sixteen columns: The DM mass in GeV, the fraction x -- defined as the kinetic energy divided by the DM mass. The rest of the columns are organised as 
+
+```console
+dN/dx [ee]  dN/dx [mumu]   dN/dx [tautau]    dN/dx [uu]    dN/dx [dd]    dN/dx [ss]     dN/dx [cc]      dN/dx [bb]     dN/dx [tt]     dN/dx [gaga]     dN/dx [zz]         dN/dx [ww]      dN/dx [gg]      dN/dx [hh]     
+```
+
+#### 2) data/wUncertainty
+
+In this folder, we provide the particle spectra along with the QCD uncertainties on the central value. Each file contains one hundred columns: The DM mass in GeV, the fraction x -- defined as the kinetic energy of the particle divided by the DM mass --. The rest of the columns are organised as 
 
 ```console
 dN/dx [XX]    +DHad [XX]   -DHad [XX]   +DScale [XX]   -DScale [XX]    +DcNS [XX]    -DcNS [XX]  
@@ -23,7 +39,7 @@ dN/dx [XX]: is the flux at the best-fit point of the PYTHIA8 parameters.
 +-DcNS [XX]: are the uncertainties from the variations of the non-singular terms of the DGLAP splitting kernels. 
 ```
 
-In the folder data/wUncertainty, the files are named as:
+In the two folders, the files are named as:
 ```console
 AtProduction-FS.dat; FS = Ga, Positrons, Nuel, Numu, Nuta, AntiP.
 ```
