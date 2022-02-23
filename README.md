@@ -18,9 +18,9 @@ For each final state, there is one dedicated file in ascii format. Each file con
 dN/dx [XX]    +DHad [XX]   -DHad [XX]   +DScale [XX]   -DScale [XX]    +DcNS [XX]    -DcNS [XX]  
 
 dN/dx [XX]: is the flux at the best-fit point of the PYTHIA8 parameters.
-+- DHad [XX]: are the uncertainties on the flux from the variations of the hadronisation model parameters.
-+- DScale [XX]: are the shower uncertainties on the flux from the variation of the shower evolution variable by a factor of 2.
-+- DcNS [XX]: are the uncertainties from the variations of the non-singular terms of the DGLAP splitting kernels. 
++-DHad [XX]: are the uncertainties on the flux from the variations of the hadronisation model parameters.
++-DScale [XX]: are the shower uncertainties on the flux from the variation of the shower evolution variable by a factor of 2.
++-DcNS [XX]: are the uncertainties from the variations of the non-singular terms of the DGLAP splitting kernels. 
 ```
 
 In the folder data/wUncertainty, the files are named as:
