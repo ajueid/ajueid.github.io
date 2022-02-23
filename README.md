@@ -10,7 +10,7 @@ DM DM -> e+e-, mu+ mu-, tau tau, uu, dd, ss, cc, bb, tt, WW, ZZ, gg, and hh     
 
 The data is provided in such a way to faciliate including the uncertainties in DM fits. In other words, for each file, we provide the central prediction for the flux of the particle specie in addition to +- uncertainties on the flux (three independent uncertainties). We also provide the Tables that contains only the central values of the fluxes and not the uncertainties. The Tables are provided for six final states: photons, positrons, electron antineutrinos, muon antineutrinos, tau antineutrinos, and antiprotons.
 
-## The Structure of the Tables
+## Structure of the Tables
 
 For each final state, there is one dedicated file in ascii format. Each file contains one hundred columns: The DM mass in GeV, the fraction x -- defined as the kinetic energy of the particle divided by the DM mass --. The rest of the columns are organised as 
 
