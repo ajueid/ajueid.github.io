@@ -48,8 +48,8 @@ AtProduction-FS.dat; FS = Ga, Positrons, Nuel, Numu, Nuta, AntiP.
 
 If you use these Tables please cite the following references:
 
-- [S. Amoroso, S. Caron, A. Jueid, R. Ruiz de Austri, P. Skands, JCAP 05 (2019) 007](https://arxiv.org/abs/1812.07424)
 - [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, e-Print: 2202.11546](https://arxiv.org/abs/2202.11546)
+- [S. Amoroso, S. Caron, A. Jueid, R. Ruiz de Austri, P. Skands, JCAP 05 (2019) 007](https://arxiv.org/abs/1812.07424)
 
 And optionally
 - [S. Mrenna, P. Skands, Phys.Rev.D 94 (2016) 7, 074005](https://arxiv.org/abs/1605.08352)
