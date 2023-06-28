@@ -1,4 +1,4 @@
-# Toolbox for DM uncertainties from QCD uncertainties
+# Toolbox for QCD uncertainties on particle spectra from dark-matter annihilation
 
 ## Introduction
 
