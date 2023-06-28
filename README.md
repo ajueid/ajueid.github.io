@@ -1,4 +1,4 @@
-# Toolbox for QCD uncertainties on particle spectra from dark-matter annihilation
+# Toolbox for DM uncertainties from QCD uncertainties
 
 ## Introduction
 
@@ -44,12 +44,37 @@ In the two folders, the files are named as:
 AtProduction-FS.dat; FS = Ga, Positrons, Nuel, Numu, Nuta, AntiP.
 ```
 
+## Interpolation
+
+The file 'Interpolate.py' containts five functions which can provide either an interpolated annihilation spectrum, a simulated diffusion spectrum if the final-state particles are antiprotons, or one of three types of DM uncertainties. The functions can be called by simply importing the 'Interpolate.py' file.
+
+## Antiproton propagation
+
+In order to compute the propagation of cosmic antiprotons originating from DM annihilation we use the DRAGON 2 code. We use the following diffusion parameters:
+D_0 = 4.2
+delta = 0.45
+v_A = 11.8
+eta = -1.9
+alpha = 2.29
+
+All other parameters have been left at their default values. The pre-computed diffusion tables can be provided by the user for all functions that utilize this functionality if different diffusion parameters are desired.
+
+## Annihilation and Diffused spectra
+
+The annihilation spectra including QCD uncertainties can be obtained by calling the 'annihilation_spectrum' function. The input parameters are the DM mass, annihilation channel, and final state particle, and optionally the path to the computed annihilation spectra if the location file structure has been altered. 
+The diffued spectra for antiprotons can be obtained with the function 'diffused spectrum'. This function takes the same arguments as 'annihilation_spectrum' with an additional optional argument of the path to the pre-computed diffusion table. All interpolation is done linearly.
+
+## DM uncertainties
+
+To compute DM uncertainties there are three available functions: 'sigmav_uncertainty', 'mass_uncertainty', and 'spectrum uncertainty'. These functions take the DM mass, annihilation channel, and final state particles as mandatory input parameters. The path to the computed annihilation spectra can be manually provided, as can the path to the pre-computed diffusion tables. Finally, the minimum and maximum energy of the spectra considered in the fit can be provided.
+
 ## Citations
 
 If you use these Tables please cite the following references:
 
-- [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, e-Print: 2202.11546](https://arxiv.org/abs/2202.11546)
 - [S. Amoroso, S. Caron, A. Jueid, R. Ruiz de Austri, P. Skands, JCAP 05 (2019) 007](https://arxiv.org/abs/1812.07424)
+- [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, JCAP 04 (2023) 068](https://arxiv.org/abs/2202.11546)
+- [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, e-Print:2303.11363](https://arxiv.org/2302.11363)
 
 And optionally
 - [S. Mrenna, P. Skands, Phys.Rev.D 94 (2016) 7, 074005](https://arxiv.org/abs/1605.08352)
