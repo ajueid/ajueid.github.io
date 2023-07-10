@@ -68,6 +68,21 @@ The diffued spectra for antiprotons can be obtained with the function 'diffused 
 
 To compute DM uncertainties there are three available functions: 'sigmav_uncertainty', 'mass_uncertainty', and 'spectrum uncertainty'. These functions take the DM mass, annihilation channel, and final state particles as mandatory input parameters. The path to the computed annihilation spectra can be manually provided, as can the path to the pre-computed diffusion tables. Finally, the minimum and maximum energy of the spectra considered in the fit can be provided.
 
+## Sampling code
+
+The Sampler.py code allows for the easy sampling of non-standard neutral particle spectra from Dark Matter annihilation or decay. The code can be run with Run.py; either directly, which requires manual input, or by passing input.txt as an argument. The format for an input file is exactly the same as for the manual input.  
+  
+The required input for the code is:
+
+• How the spectrum is produced: DM decay (1) or DM annihilation (2)  
+• The particle type: νe, νμ, ντ , or γ.  
+• Which process: DMDM → ν/γX (1) or DMDM → XX (2).  
+• The DM mass MDM in GeV.  
+• The X mass MX in GeV.  
+• The decay modes of X with the format being ‘BR daughter1 daughter2’. The total branching ratio must sum to 1.  
+• The number of samples from the spectrum.  
+• The path to the csv file where the points are saved. When no input is given, no save is made. The keyword ‘plot’ or ’logplot’ can be entered to plot the sampled data linearly or logarithmically.  
+  
 ## Citations
 
 If you use these Tables please cite the following references:
@@ -75,6 +90,10 @@ If you use these Tables please cite the following references:
 - [S. Amoroso, S. Caron, A. Jueid, R. Ruiz de Austri, P. Skands, JCAP 05 (2019) 007](https://arxiv.org/abs/1812.07424)
 - [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, JCAP 04 (2023) 068](https://arxiv.org/abs/2202.11546)
 - [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, e-Print:2303.11363](https://arxiv.org/2302.11363)
+
+If you use the sample code please cite:
+
+- [W. Beenakker, S. Caron, J. Kip, R. Ruiz de Austri, Zhongyi Zhang, e-Print: 2306.16523](https://arxiv.org/abs/2306.16523)
 
 And optionally
 - [S. Mrenna, P. Skands, Phys.Rev.D 94 (2016) 7, 074005](https://arxiv.org/abs/1605.08352)
