@@ -81,7 +81,7 @@ The required input for the code is:
 • The X mass MX in GeV.  
 • The decay modes of X with the format being ‘BR daughter1 daughter2’. The total branching ratio must sum to 1.  
 • The number of samples from the spectrum.  
-• The path to the csv file where the points are saved. When no input is given, no save is made. The keyword ‘plot’ or ’logplot’ can be entered to plot the sampled data linearly or logarithmically.  
+• The path to the csv file where the points are saved. When no input is given, no save is made. The keyword ‘plot’ or ’logplot’ can be entered to plot the sampled data linearly or logarithmically. 
   
 ## Citations
 
@@ -91,7 +91,7 @@ If you use these Tables please cite the following references:
 - [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, JCAP 04 (2023) 068](https://arxiv.org/abs/2202.11546)
 - [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, e-Print:2303.11363](https://arxiv.org/2302.11363)
 
-If you use the sample code please cite:
+If you use the sampler code please cite:
 
 - [W. Beenakker, S. Caron, J. Kip, R. Ruiz de Austri, Zhongyi Zhang, e-Print: 2306.16523](https://arxiv.org/abs/2306.16523)
 

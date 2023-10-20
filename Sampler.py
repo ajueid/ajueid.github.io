@@ -1,6 +1,6 @@
-import Interpolate
+from .QCD_Spectra import Interpolate
 from sys import argv
-from numpy import cosh, sinh, arccosh, log, floor, log10
+from numpy import cosh, sinh, arccosh, log, floor, log10, sqrt, sign
 from numpy.random import rand
 import matplotlib.pyplot as plt 
 from random import uniform
@@ -28,7 +28,11 @@ class Input():
                 self.mdm = float(f[3])
                 if not self.ann:
                     self.mdm = self.mdm * 0.5 
-                self.mX = float(f[4])
+                self.mX = float(f[4].split()[0])
+                if len(f[4].split()) == 2:
+                    self.pol = str(f[4].split()[1])
+                else:
+                    self.pol = None
                 self._check_ann_kinematics()
                 self.decay_mode = self._file_decay_modes(f[5])
                 self.nsamples = int(f[6])
@@ -37,7 +41,7 @@ class Input():
             self.ann = self._get_ann_input()
             self.final_state = self._get_final_state()
             self.XX = self._get_input_XX()
-            self.mdm, self.mX = self._get_input_masses()
+            self.mdm, self.mX, self.pol = self._get_input_masses()
             if not self.ann:
                 self.mdm = self.mdm * 0.5
             self._check_ann_kinematics()
@@ -67,11 +71,16 @@ class Input():
             raise ValueError(f'Improper final state. Good final states are Nuel, Numu, Nuta, or Ga not {f[1]}. Aborting')
         try:
             float(f[3])
-            float(f[4])
+            mX = f[4].split()[0]
+            float(mX)
         except ValueError:
             raise ValueError('Either the DM mass or X mass is not a float. Aborting')
-        if (float(f[3]) < 0 ) or (float(f[4]) < 0):
+        if (float(f[3]) < 0 ) or (float(f[4].split()[0]) < 0):
             raise ValueError('The DM mass or X mass is smaller than 0. Aborting')
+        f4 = f[4].split()
+        if len(f4) == 2:
+            if not f4[1] in ['-1', '-0.5' ,'0', '0.5', '1', 'T', 'L']:
+                raise ValueError('Format of polarization of X is wrong. Must be -1, -0.5, 0, 0.5, 1, L or T. Aborting')
         try:
             int(f[6])
         except ValueError:
@@ -121,53 +130,75 @@ class Input():
 
     #Gets the branching ratios and decay modes of the BSM particle X.
     def _get_decay_modes(self):
-        BR = 0
+        br = 0
         X_decay_modes = []
-        decay_mode = input('Decay modes of particle X (e.g. 1.0 v h, or 0.5 v Z:\n')
+        decay_mode = input('Decay modes of particle X (e.g. 1.0,v,h, or 0.5,v,Z,0.33):\n')
         check = self._check_decay_mode(decay_mode)
         while not check:
-            decay_mode = input('Decay mode not in a proper format, a good format for example is 0.5 h z.\n')
+            decay_mode = input('Decay mode not in a proper format, a good format for example is 0.5,h,z.\n')
             check = self._check_decay_mode(decay_mode)
 
-        X_decay_modes.append(Decay_modes(float(decay_mode.split()[0]), str(decay_mode.split()[1]).lower(), str(decay_mode.split()[2]).lower(), self.mX, self.final_state))
-        BR += float(decay_mode.split()[0])
-        while BR < 1.0:
+        comp = decay_mode.split(',')
+        if len(comp) == 3:
+            X_decay_modes.append(Decay_modes(float(comp[0]), str(comp[1]).lower(), str(comp[2]).lower(), self.mX, self.final_state))
+        elif len(comp) == 4:
+            X_decay_modes.append(Decay_modes(float(comp[0]), str(comp[1]).lower(), str(comp[2]).lower(), self.mX, self.final_state, float(comp[3])))
+        br += float(comp[0])
+        while br < 1.0:
             decay_mode = input('Total branching ratio is less than one, please provide additional decay modes:\n')
             check = self._check_decay_mode(decay_mode)
             while not check:
                 decay_mode = input('Decay mode not in a proper format, a good format for example is 0.5 h z.\n')
                 check = self._check_decay_mode(decay_mode)
 
-            X_decay_modes.append(Decay_modes(float(decay_mode.split()[0]), str(decay_mode.split()[1]).lower(), str(decay_mode.split()[2]).lower(), self.mX, self.final_state))
-            BR += float(decay_mode.split()[0])
-        if BR > 1.0:
+            comp = decay_mode.split(',')
+            if len(comp) == 3:
+                X_decay_modes.append(Decay_modes(float(comp[0]), str(comp[1]).lower(), str(comp[2]).lower(), self.mX, self.final_state))
+            elif len(comp) == 4:
+                X_decay_modes.append(Decay_modes(float(comp[0]), str(comp[1]).lower(), str(comp[2]).lower(), self.mX, self.final_state, float(comp[3])))
+                br += float(decay_mode.split()[0])
+        if br > 1.0:
             raise ValueError('Branching ratio is larger than 1.0: Aborting.')
         return X_decay_modes
 
     #Checks if the decay mode is in a proper format
     def _check_decay_mode(self, inp):
         SM_particles = ['u', 'd', 's', 'c', 'b', 't', 'e','mu', 'tau', 'w', 'z', 'h', 'g', 'ga','v']
-        if not len(inp.split()) == 3:
+        if len(inp.split(',')) != 3 and len(inp.split(',')) != 4:
             return False
         try:
-            float(inp.split()[0])
+            float(inp.split(',')[0])
         except ValueError:
             return False
-        if (float(inp.split()[0]) < 0) or not (inp.split()[1] in SM_particles) or not (inp.split()[2] in SM_particles):
+        if (float(inp.split(',')[0]) < 0):
             return False
+        elif not (inp.split(',')[1] in SM_particles) or not (inp.split(',')[2] in SM_particles):
+            return False
+        if len(inp.split(',')) == 4:
+            try:
+                float(inp.split(',')[3])
+            except ValueError:
+                return False
+            if abs(float(inp.split(','))) > 1.0:
+                return False
         else:
             return True
 
     #Gets the decay modes from the input file    
     def _file_decay_modes(self, modes):
         entries = modes.split() 
+        comps = [entries[i].split(',') for i in range(len(entries))]
+        for comp in comps:
+            if len(comp) != 3 and len(comp) != 4:
+                raise ValueError('Branching modes of X not properly defined. Aborting')
         X_decay_modes = []
-        if not len(entries)%3 == 0:
-            raise ValueError('Branching modes of X not properly defined. Aborting')
-        if sum(float(f) for f in entries[::3]) != 1.0:
+        if sum(float(comps[i][0]) for i in range(len(comps))) != 1.0:
             raise ValueError('Branching ratio of X does not total 1.0. Aborting')
-        for i in range(int(len(entries)/3)):
-            X_decay_modes.append(Decay_modes(float(entries[0 + 3*i]), str(entries[1 + 3*i]).lower(), str(entries[2 + 3*i]).lower(), self.mX, self.final_state))
+        for comp in comps:
+            if len(comp) == 3:
+                X_decay_modes.append(Decay_modes(float(comp[0]), str(comp[1]).lower(), str(comp[2]).lower(), self.mX, self.final_state))
+            elif len(comp) == 4:
+                X_decay_modes.append(Decay_modes(float(comp[0]), str(comp[1]).lower(), str(comp[2]).lower(), self.mX, self.final_state, float(comp[3])))
         return X_decay_modes
 
     #Gets the masses of the DM particle and particle X, all SM masses are tabulated.
@@ -182,7 +213,12 @@ class Input():
         while not check:
             mX = input('Mass is either not a number or is negative, please provide a new particle X mass:\n')
             check = self._check_masses(mX)
-        return float(mdm), float(mX)
+        pol = input('Please provide the polarization of X (optional):\n')
+        if pol == '\n':
+            pol = None
+        while not pol in ['-1', '-0.5', '0', '0.5' '1', 'L', 'T' , '\n']:
+            pol = input('Polarization input must be -1, -0.5, 0, 0.5, 1, L, T, or an enter. Please provide a new polarization:\n')
+        return float(mdm), float(mX), pol
 
     #Check if the input given for mass is a float and not negative
     def _check_masses(self, inp):
@@ -226,24 +262,84 @@ class Sample():
         self.final_state = inp.final_state
         self.mdm = inp.mdm
         self.mX = inp.mX
+        self.pol = inp.pol
         self.decay_mode = inp.decay_mode
         self.nsamples = inp.nsamples
         self.csv_path = inp.csv_path
 
-    #Samples the 'box' shape of the final state spectrum.
-    def _sample_box(self, mdaughter2):
+    #Samples the appropriate 'box' shape of the final state spectrum. 
+    def _sample_box(self, mdaughter2, cmcmm):
+        if cmcmm == None:
+            cmcmm = 0
         if self.XX:
             eta = arccosh(self.mdm / self.mX)
         else:
             eta = arccosh( (4 * self.mdm**2 + self.mX**2)/ (4 * self.mdm * self.mX))
         
-        E1 = (self.mX**2 - mdaughter2**2) / (2 * self.mX) * (cosh(eta) - sinh(eta))
-        E2 = (self.mX**2 - mdaughter2**2) / (2 * self.mX) * (cosh(eta) + sinh(eta))
+        Emin = (self.mX**2 - mdaughter2**2) / (2 * self.mX) * (cosh(eta) - sinh(eta))
+        Emax = (self.mX**2 - mdaughter2**2) / (2 * self.mX) * (cosh(eta) + sinh(eta))
+        
+        if self.pol == None:
+            return self._sample_flat_box(Emin, Emax)
+        elif self.pol in ['-0.5', '0.5']:
+            return self._sample_ferm_box(Emin, Emax, cmcmm)
+        elif self.pol in ['-1','0', '1', 'L', 'T']:
+            return self._sample_vec_box(Emin, Emax, cmcmm)
 
+    #Samples a flat box.
+    def _sample_flat_box(self, Emin, Emax):
         u = rand()
+        return Emin + u * (Emax - Emin)
+        
+    #Samples the box when X is polarized and fermionic.
+    def _sample_ferm_box(self, Emin, Emax, cmcmm):
+        if float(cmcmm) == 0:
+            return self._sample_flat_box(Emin, Emax)
+        if self.XX:
+            Ex = self.mdm 
+        else:
+            Ex = self.mdm + self.mX**2 / (4 * self.mdm)
+        return self._reject_sampling(Ex, 1 + cmcmm, self._ferm_func, cmcmm)
 
-        return E1 + u * (E2 - E1)
+    #Returns the dNdE for the fermionic box.
+    def _ferm_func(self, E, Ex, cmcmm):
+        if self.pol == '-0.5':
+            return 1 - cmcmm * (2*E - Ex)/(sqrt(Ex**2 - self.mX**2))
+        else:
+            return 1 + cmcmm * (2*E - Ex)/(sqrt(Ex**2 - self.mX**2))
 
+    #Samples the box when X is polarized and vector-like.
+    def _sample_vec_box(self, Emin, Emax, cmcmm):
+        if self.XX:
+            Ex = self.mdm 
+        else:
+            Ex = self.mdm + self.mX**2 / (4 * self.mdm)
+        if self.pol in ['0', 'L']:
+            ymax = self._vec_func(0.5 * Ex, Ex, cmcmm)
+        else:
+            ymax = max(self._vec_func(Emin, Ex, cmcmm), self._vec_func(Emax, Ex, cmcmm)) 
+        return self._reject_sampling(Ex, ymax, self._vec_func, cmcmm)
+    
+    #Box shapes of a spin-1 X
+    def _vec_func(self, E, Ex, cmcmm):
+        if self.pol in ['0', 'L']:
+            return -4*E**2 + 4*Ex*E - self.mX**2
+        elif self.pol in ['-1','1']:
+            return 4*E**2 - 4*Ex*E + 2*Ex**2 - self.mX**2 + sign(float(self.pol))*2*cmcmm*(2*E-Ex)*sqrt(Ex**2-self.mX**2)
+        elif self.pol == 'T':
+            return 4*E**2 - 4*Ex*E + 2*Ex**2 - self.mX**2
+
+    #Performs rejections sampling
+    def _reject_sampling(self, Ex, ymax, func, cmcmm):
+        xmin = 0.5 * (Ex - sqrt(Ex**2 - self.mX**2))
+        xmax = 0.5 * (Ex + sqrt(Ex**2 - self.mX**2))
+        xx = uniform(xmin, xmax)
+        yy = uniform(0, ymax)
+        while yy > func(xx, Ex, cmcmm):
+            xx = uniform(xmin, xmax)
+            yy = uniform(0, ymax)
+        return xx
+    
     #Samples the peak of the final state spectrum.
     def _sample_peak(self):
         return (4 * self.mdm**2 - self.mX**2) / (4 * self.mdm)
@@ -292,6 +388,10 @@ class Sample():
             return 2*N[-1]
         else:
             return (N[-1] + 1)
+    
+    #Returns the normalization constant in order to obtain the spectrum per annihilation/decay
+    def norm_const(self):
+        return self.nsamples / self.final_state_particles_per_collision()
 
     #Samples the total spectrum. Note the 0.5 factor in front of the final_state_particles_per_collission when self.XX == True. This is because the sampling is done for a single X, but _number_of_final_state_particles gives the total number for 2 X.
     def _sample_total(self):
@@ -307,9 +407,10 @@ class Sample():
             tmp_CDF = self.decay_mode[i1].CDF[i2]
             mdaughter1 = self.decay_mode[i1].get_mass(self.decay_mode[i1].daughter[i2])
             mdaughter2 = self.decay_mode[i1].get_mass(self.decay_mode[i1].daughter[((i2+1)%2)])
+            cmcmm = self.decay_mode[i1].cmcmm
 
             if tmp_CDF == None:
-                return self._sample_box(mdaughter2)
+                return self._sample_box(mdaughter2, cmcmm)
             else:
                 return self._sample_spect(tmp_CDF)
 
@@ -327,9 +428,10 @@ class Sample():
                 tmp_CDF = self.decay_mode[i1].CDF[i2]
                 mdaughter1 = self.decay_mode[i1].get_mass(self.decay_mode[i1].daughter[i2])
                 mdaughter2 = self.decay_mode[i1].get_mass(self.decay_mode[i1].daughter[((i2+1)%2)])
+                cmcmm = self.decay_mode[i1].cmcmm
 
                 if tmp_CDF == None:
-                    return self._sample_box(mdaughter2)
+                    return self._sample_box(mdaughter2, cmcmm)
                 else:
                     return self._sample_spect(tmp_CDF)
 
@@ -376,12 +478,13 @@ class Sample():
 
 #Contains all the relevant information for a decay mode of particle X
 class Decay_modes():
-    def __init__(self, frac, daughter1, daughter2, mX, final_state):
+    def __init__(self, frac, daughter1, daughter2, mX, final_state, cmcmm = None):
         self.frac = frac 
         self.daughter = [daughter1, daughter2]
         self.mX = mX
         self._check_decay_kinematics()
         self.final_state = final_state
+        self.cmcmm = cmcmm
         self.CDF = [self._final_state_spectrum(daughter1, daughter2), self._final_state_spectrum(daughter2, daughter1)]
         self.num1 = self._final_state_counter(daughter1, daughter2)
         self.num2 = self._final_state_counter(daughter2, daughter1)
