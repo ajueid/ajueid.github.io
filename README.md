@@ -100,8 +100,5 @@ And optionally
 - [S. Amoroso, S. Caron, A. Jueid, R. Ruiz de Austri, P. Skands,  PoS TOOLS2020 (2021) 028](https://arxiv.org/abs/2012.08901)
 - [A. Jueid, J. Phys.: Conf. Ser. 2156 012057](https://arxiv.org/abs/2110.09747)
 
-## Authors
-- [Adil Jueid](adil.hep@gmail.com)
-- [Jochem Kip](jochem.kip@ru.nl)
-- [Roberto Ruiz de Austri](rruiz@ific.uv.es)
-- [Peter Skands](peter.skands@monash.edu)
+### Contact
+If you have any question or bug reports, please contact adil.hep@gmail.com
