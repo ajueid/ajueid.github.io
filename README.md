@@ -89,7 +89,7 @@ If you use these Tables please cite the following references:
 
 - [S. Amoroso, S. Caron, A. Jueid, R. Ruiz de Austri, P. Skands, JCAP 05 (2019) 007](https://arxiv.org/abs/1812.07424)
 - [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, JCAP 04 (2023) 068](https://arxiv.org/abs/2202.11546)
-- [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, e-Print:2303.11363](https://arxiv.org/2302.11363)
+- [A. Jueid, J. Kip, R. Ruiz de Austri, P. Skands, e-Print:2303.11363](https://arxiv.org/2303.11363)
 
 If you use the sampler code please cite:
 
