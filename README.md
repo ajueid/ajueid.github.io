@@ -101,4 +101,5 @@ And optionally
 - [A. Jueid, J. Phys.: Conf. Ser. 2156 012057](https://arxiv.org/abs/2110.09747)
 
 ### Contact
-If you have any question or bug reports, please contact adil.hep@gmail.com
+If you have any question or bug reports, please contact: 
+- Adil Jueid (adil.hep@gmail.com)
